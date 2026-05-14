@@ -8,7 +8,17 @@
 ![License](https://img.shields.io/badge/license-Apache--2.0-green)
 ![Agent Skills](https://img.shields.io/badge/Agent%20Skills-compatible-brightgreen)
 
-一个兼容 [Agent Skills](https://agentskills.io/specification) 规范的技能，在 AI 辅助编码中强制执行软件工程纪律。基于 Karpathy 的洞察：*思考可以外包，理解不能外包*。
+一个兼容 [Agent Skills](https://agentskills.io/specification) 规范的技能套件，在 AI 辅助编码中强制执行软件工程纪律。基于 Karpathy 的洞察：*思考可以外包，理解不能外包*。
+
+## 技能一览
+
+| 技能 | 说明 | 适用范围 |
+|------|------|----------|
+| **vibe-coding-guardian** | 核心工程纪律 — 五条铁律、双模式、风险自适应验证 | 语言无关 |
+| **vibe-coding-pyguardian** | Python 版 — 将铁律映射到 ruff/mypy/pytest/bandit 工具链 | Python |
+| **vibe-coding-pyinit** | 项目脚手架 — 用 uv/ruff/mypy/ty/pytest/prek 标准化 Python 开发环境 | Python |
+
+`vibe-coding-guardian` 定义*验证什么*。`vibe-coding-pyguardian` 定义*怎么在 Python 中验证*。`vibe-coding-pyinit` 确保验证基础设施从第一天就到位。
 
 ## 亮点（v1.8.0）
 
@@ -23,6 +33,7 @@
 
 - [vibe-coding-guardian](#vibe-coding-guardian)
   - [亮点（v1.8.0）](#亮点v180)
+  - [技能一览](#技能一览)
   - [目录](#目录)
   - [为什么需要这个技能？](#为什么需要这个技能)
   - [五条铁律](#五条铁律)
@@ -161,17 +172,35 @@ AI：[🟡 中风险：新功能 + 数据写入]
 ## 文件结构
 
 ```
-vibe-coding-guardian/
+vibe-coding-guardian/               # 语言无关的核心技能
 ├── SKILL.md                        # 核心技能（frontmatter + 铁律 + 决策流程）
 ├── README.md                       # 英文说明
 ├── README_cn.md                    # 中文说明
 ├── CHANGELOG.md                    # 版本变更记录
+├── LICENSE                         # Apache-2.0
 └── references/
     ├── architecture.md             # 架构守护（按需加载）
     ├── security.md                 # 安全护栏（按需加载）
     ├── quality-gates.md            # 质量门禁（按需加载）
     ├── refactoring.md              # 重构治理（按需加载）
     └── examples.md                 # 正反示例（按需加载）
+
+skills/
+├── vibe-coding-pyguardian/         # Python 版
+│   ├── SKILL.md
+│   ├── README.md
+│   └── references/
+│       ├── architecture.md
+│       ├── security.md
+│       ├── quality-gates.md
+│       ├── refactoring.md
+│       └── examples.md
+└── vibe-coding-pyinit/             # Python 项目脚手架
+    ├── SKILL.md
+    └── references/
+        ├── library.md
+        ├── web-api.md
+        └── data-pipeline.md
 ```
 
 ## 关键设计决策
@@ -205,6 +234,7 @@ vibe-coding-guardian/
 | v1.6.0 | 内部一致性 — 统一关键词、git diff 仅向上修正、双模式工具表 |
 | v1.7.0 | 二次 AI 评审 — security.md 部分加载、无测试降级、信号 5 警告不阻断、自动升级提醒 |
 | v1.8.0 | 铁律四双模式表格、已知风险标注、"done/finished"触发词 |
+| — | 新增 `vibe-coding-pyguardian`（Python 版）和 `vibe-coding-pyinit`（项目脚手架）两个配套技能 |
 
 详细变更记录见 [CHANGELOG.md](./CHANGELOG.md)。
 

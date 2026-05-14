@@ -8,7 +8,17 @@ English | [中文](./README_cn.md)
 ![License](https://img.shields.io/badge/license-Apache--2.0-green)
 ![Agent Skills](https://img.shields.io/badge/Agent%20Skills-compatible-brightgreen)
 
-An [Agent Skills](https://agentskills.io/specification)-compatible skill that enforces software engineering discipline in AI-assisted coding. Built on Karpathy's insight: *thinking can be outsourced, understanding cannot*.
+An [Agent Skills](https://agentskills.io/specification)-compatible skill suite that enforces software engineering discipline in AI-assisted coding. Built on Karpathy's insight: *thinking can be outsourced, understanding cannot*.
+
+## Skills in this Repository
+
+| Skill | Description | Scope |
+|-------|-------------|-------|
+| **vibe-coding-guardian** | Core engineering discipline — 5 iron rules, dual mode, risk-adapted verification | Language-agnostic |
+| **vibe-coding-pyguardian** | Python edition — maps iron rules to ruff/mypy/pytest/bandit tool chain | Python |
+| **vibe-coding-pyinit** | Project scaffolding — standardized Python dev environment with uv/ruff/mypy/ty/pytest/prek | Python |
+
+`vibe-coding-guardian` defines *what* to verify. `vibe-coding-pyguardian` defines *how* to verify in Python. `vibe-coding-pyinit` ensures the verification infrastructure is in place from day one.
 
 ## Highlights (v1.8.0)
 
@@ -22,6 +32,7 @@ An [Agent Skills](https://agentskills.io/specification)-compatible skill that en
 ## Table of Contents
 
 - [Why This Skill?](#why-this-skill)
+- [Skills in this Repository](#skills-in-this-repository)
 - [Five Iron Rules](#five-iron-rules)
 - [Dual Mode](#dual-mode)
 - [Progressive Disclosure](#progressive-disclosure)
@@ -155,17 +166,35 @@ AI: [🟡 medium risk: new feature + data write]
 ## File Structure
 
 ```
-vibe-coding-guardian/
+vibe-coding-guardian/               # Language-agnostic core
 ├── SKILL.md                        # Core skill (frontmatter + iron rules + decision flow)
 ├── README.md                       # English documentation
 ├── README_cn.md                    # Chinese documentation (中文文档)
 ├── CHANGELOG.md                    # Version history
+├── LICENSE                         # Apache-2.0
 └── references/
     ├── architecture.md             # Architecture guardian (on-demand)
     ├── security.md                 # Security guardrails (on-demand)
     ├── quality-gates.md            # Quality gates (on-demand)
     ├── refactoring.md              # Refactoring governance (on-demand)
     └── examples.md                 # Good vs Bad examples (on-demand)
+
+skills/
+├── vibe-coding-pyguardian/         # Python-specific edition
+│   ├── SKILL.md
+│   ├── README.md
+│   └── references/
+│       ├── architecture.md
+│       ├── security.md
+│       ├── quality-gates.md
+│       ├── refactoring.md
+│       └── examples.md
+└── vibe-coding-pyinit/             # Python project scaffolding
+    ├── SKILL.md
+    └── references/
+        ├── library.md
+        ├── web-api.md
+        └── data-pipeline.md
 ```
 
 ## Key Design Decisions
@@ -199,6 +228,7 @@ vibe-coding-guardian/
 | v1.6.0 | Internal consistency — unified keywords, upward-only git diff, dual-mode tool table |
 | v1.7.0 | Second AI review — security.md partial loading, test/no-test fallback, signal 5 warn-not-block, auto-upgrade reminders |
 | v1.8.0 | Iron rule 4 dual-mode table, known-risk documentation, "done/finished" trigger words |
+| — | `vibe-coding-pyguardian` (Python edition) and `vibe-coding-pyinit` (project scaffolding) added as companion skills |
 
 For detailed changes, see [CHANGELOG.md](./CHANGELOG.md).
 
