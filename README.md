@@ -4,7 +4,7 @@
 
 English | [中文](./README_cn.md)
 
-![Version](https://img.shields.io/badge/version-1.8.0-blue)
+![Version](https://img.shields.io/badge/version-1.9.1-blue)
 ![License](https://img.shields.io/badge/license-Apache--2.0-green)
 ![Agent Skills](https://img.shields.io/badge/Agent%20Skills-compatible-brightgreen)
 
@@ -14,16 +14,19 @@ An [Agent Skills](https://agentskills.io/specification)-compatible skill suite t
 
 | Skill | Description | Scope |
 |-------|-------------|-------|
-| **vibe-coding-guardian** | Core engineering discipline — 5 iron rules, dual mode, risk-adapted verification | Language-agnostic |
-| **vibe-coding-pyguardian** | Python edition — maps iron rules to ruff/mypy/pytest/bandit tool chain | Python |
-| **vibe-coding-pyinit** | Project scaffolding — standardized Python dev environment with uv/ruff/mypy/ty/pytest/prek | Python |
+| **vibe-coding-guardian** | Core engineering discipline — Karpathy pre-constraints, 5 iron rules, dual mode, 8 computable signals | Language-agnostic |
 
-`vibe-coding-guardian` defines *what* to verify. `vibe-coding-pyguardian` defines *how* to verify in Python. `vibe-coding-pyinit` ensures the verification infrastructure is in place from day one.
+`vibe-coding-guardian` defines *what* to verify across any language.
 
-## Highlights (v1.8.0)
+> Python-specific skills (`vibe-coding-pyguardian`, `vibe-coding-pyinit`) have moved to the independent project [python-hunter](https://github.com/realanthonysu/python-hunter).
+> Testing skills (`testsmith`, `testweaver`) have moved to the independent project [vibe-testing](../vibe-testing/).
 
+## Highlights (v1.9.1)
+
+- **Karpathy pre-constraints** — Minimum code, surgical changes, explicit assumptions before any iron rule
+- **8 computable signals** — adds orphan cleanup, assumption validation, and complexity bloat detection
+- **Phantom success guard** — "running" is re-checked against "solves the actual problem"
 - **Dual mode** — 🚀 Prototype for speed, 🏭 Production for safety
-- **5 computable signals** — replaces "gut feeling" with `git diff` + `grep`
 - **Zero dependencies** — works with just git + your project's test/lint commands
 - **Auto-remind** — nudges you from Prototype to Production before commit/deploy
 
@@ -63,6 +66,14 @@ This skill makes completion conditions, verification evidence, and escalation pa
 | 3 | **Verification structure > quantity** | 10 tests covering critical paths > 100 tests covering trivial paths |
 | 4 | **Higher risk, deeper verification** | 🟢 low → quick check · 🟡 medium → standard verification · 🔴 high → deep verification + human confirmation |
 | 5 | **Know when to escalate** | Escalation isn't failure — it's engineering maturity |
+
+All five rules sit on top of three **Karpathy pre-constraints** that guard against AI-specific failure modes:
+
+| Constraint | Guards against | One-liner |
+|------------|----------------|-----------|
+| **Simplicity First** | Over-engineering | Code is liability — minimum code that solves the problem |
+| **Surgical Changes** | Orthogonal side effects | Touch only what you must; every changed line traces to the request |
+| **Surface Assumptions** | Unchecked assumptions | State assumptions explicitly; push back when warranted |
 
 ## Dual Mode
 
@@ -178,31 +189,16 @@ vibe-coding-guardian/               # Language-agnostic core
     ├── quality-gates.md            # Quality gates (on-demand)
     ├── refactoring.md              # Refactoring governance (on-demand)
     └── examples.md                 # Good vs Bad examples (on-demand)
-
-skills/
-├── vibe-coding-pyguardian/         # Python-specific edition
-│   ├── SKILL.md
-│   ├── README.md
-│   └── references/
-│       ├── architecture.md
-│       ├── security.md
-│       ├── quality-gates.md
-│       ├── refactoring.md
-│       └── examples.md
-└── vibe-coding-pyinit/             # Python project scaffolding
-    ├── SKILL.md
-    └── references/
-        ├── library.md
-        ├── web-api.md
-        └── data-pipeline.md
 ```
+
+> Python-specific skills (`vibe-coding-pyguardian`, `vibe-coding-pyinit`) are now in [python-hunter](https://github.com/realanthonysu/python-hunter).
 
 ## Key Design Decisions
 
 | Decision | Rationale |
 |----------|-----------|
 | Default to 🚀 Prototype | Respects Vibe Coding's speed-first philosophy |
-| 5 computable escalation signals | Replaces "gut feeling" with detectable patterns |
+| 8 computable escalation signals | Replaces "gut feeling" with detectable patterns |
 | `git diff` is optional, upward-only | Works without git history; can only escalate, never downgrade risk |
 | security.md loaded partially in 🚀 | Even prototypes touching auth need input validation |
 | Auto-remind on commit/push/deploy | Catches the "prototype → production" drift before it ships |
@@ -217,6 +213,8 @@ skills/
 
 ## Evolution History
 
+### vibe-coding-guardian (v1.9)
+
 | Version | Key Change |
 |---------|-----------|
 | v1.0.0 | Initial design — 5 iron rules + progressive disclosure |
@@ -228,7 +226,8 @@ skills/
 | v1.6.0 | Internal consistency — unified keywords, upward-only git diff, dual-mode tool table |
 | v1.7.0 | Second AI review — security.md partial loading, test/no-test fallback, signal 5 warn-not-block, auto-upgrade reminders |
 | v1.8.0 | Iron rule 4 dual-mode table, known-risk documentation, "done/finished" trigger words |
-| — | `vibe-coding-pyguardian` (Python edition) and `vibe-coding-pyinit` (project scaffolding) added as companion skills |
+| v1.9.0 | Karpathy pre-constraints (Simplicity / Surgical / Assumptions), 8 signals (+3), phantom success guard, expanded anti-patterns |
+| v1.9.1 | Constraint-to-rule mapping, execution timing, signal 6-8 examples, internal consistency fixes |
 
 For detailed changes, see [CHANGELOG.md](./CHANGELOG.md).
 

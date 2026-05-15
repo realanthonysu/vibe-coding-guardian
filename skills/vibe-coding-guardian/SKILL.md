@@ -11,7 +11,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: vibe-coding-guardian
-  version: "1.8"
+  version: "1.9.1"
   paradigm: vibe-coding-guardian
   core-thesis: "thinking can be outsourced, understanding cannot — Karpathy"
 ---
@@ -82,6 +82,55 @@ Vibe Coding Guardian 有两种运行模式，根据项目阶段选择：
 
 ---
 
+## 核心工程原则（Karpathy 前置约束）
+
+五条铁律之前，先落实三项 Karpathy 核心约束。它们不是可选项，是后续所有 Gate Function 的前置条件。
+
+| 约束 | 主要关联 | 执行时机 |
+|------|---------|---------|
+| 极简优先 | 铁律四（风险评估）、信号 8（代码膨胀） | 生成前 + 完成自检时 |
+| 手术式修改 | 信号 6（无关改动）、信号 8（代码膨胀） | 生成时 + 信号检测时 |
+| 假设显性化 | 铁律一 🔴模板（ASSUMPTIONS）、信号 7（假设清单缺失） | 理解确认时 + 信号检测时 |
+
+### 约束一：极简优先
+
+> 代码是负债，不是资产。Minimum code that solves the problem. Nothing speculative.
+
+- **不实现未请求的功能**。用户说"加个搜索框"，不要顺手加上高级筛选、导出 CSV、权限控制。
+- **不为单次使用创建抽象**。三处重复再提取，不是一处就提取。
+- **不为不可能场景添加错误处理**。`if user is None` 如果上游已保证非空，不要加防御性判断。
+- **复杂度超标时主动提出简化**。如果任务描述一句话，实现却超过 3 倍复杂度 → 停下来，给出更简单的方案请用户选择。
+
+**自检问句**：`Would a senior engineer say this is overcomplicated?` 如果是，就简化。
+
+**执行时机**：生成代码前 + 完成条件自检时 + 信号 8（代码膨胀）检测时
+
+### 约束二：手术式修改
+
+> Touch only what you must. Clean up only your own mess.
+
+- **只修改与用户请求直接相关的代码**。不改相邻文件的格式、注释、命名风格。
+- **不重构没坏的东西**。发现无关的 dead code → 提一句，不要顺手删掉。
+- **匹配现有风格**，即使你个人偏好不同。
+- **清理自己产生的 orphan**：你的改动导致某些 import / 变量 / 函数不再被使用 → 清理掉。但**不清理已存在的 dead code**。
+
+**测试标准**：Every changed line should trace directly to the user's request.
+
+**执行时机**：生成代码时 + 信号 6（无关改动）检测时 + 信号 8（代码膨胀）检测时
+
+### 约束三：假设显性化
+
+> State your assumptions explicitly. If uncertain, ask.
+
+- **列出关键假设**：schema 结构、数据范围、并发模型、第三方行为 —— 凡是"我觉得应该是这样"的地方，都要列出来请用户确认。
+- **存在多种解释时，全部列出**，不要默默选一个最复杂的。
+- **发现更简单的方案时，主动提出**。Push back when warranted.
+- **遇到模糊指令时停止**，指出哪里不清楚，要求澄清。
+
+**执行时机**：理解确认时（铁律一 Gate Function）+ 信号 7（假设清单缺失）检测时
+
+---
+
 ## When to Activate
 
 ### MUST activate (non-negotiable)
@@ -146,6 +195,9 @@ Vibe Coding Guardian 有两种运行模式，根据项目阶段选择：
   │       WHAT:       [一句话描述要做什么]
   │       WHY:        [为什么是这个方案]
   │       CONSTRAINTS: [输入范围 / 错误处理 / 性能要求 / 兼容性 / 安全考量]
+  │       ASSUMPTIONS:  [关键假设清单 — schema / 数据范围 / 并发模型 / 第三方行为]
+  │       ALTERNATIVES: [考虑过但放弃的方案及原因 — 不只有一种解释时必填]
+  │       SUCCESS CRITERIA: [如何验证完成 — 可量化的、可自动验证的标准]
   │       → 呈现给用户，等待确认
   │       → 用户修正 → 更新模板 → 重新确认
   │       → 用户未确认 → 不动手写代码
@@ -164,6 +216,7 @@ Vibe Coding Guardian 有两种运行模式，根据项目阶段选择：
 - [ ] 负向路径：错误输入、异常状态已处理？
 - [ ] 回归风险：改动不破坏已有功能？
 - [ ] 契约一致：接口契约与调用方期望一致？
+- [ ] 目标对齐：重新阅读原始请求，确认解决方案确实解决了用户的问题（非"代码运行了但答非所问"的幻影成功）
 
 ### 铁律三：验证结构 > 验证数量
 
@@ -232,6 +285,19 @@ Vibe Coding Guardian 有两种运行模式，根据项目阶段选择：
   → git diff --name-only HEAD~1 | grep -iE "(auth|payment|crypto|session|token)"
   → 无 git 历史则检查当前改动文件路径
   → 存在 → 升级
+
+信号 6：无关改动混入
+  → 检查 diff 中是否存在与用户请求无关的文件或代码变更
+  → 无 git 历史则逐行审查当前改动
+  → 存在无关改动 → 升级（要求解释或回滚，禁止"顺手改善"相邻代码）
+
+信号 7：关键假设未确认
+  → 🔴 高风险任务检查：是否已列出 ASSUMPTIONS 并获得用户确认
+  → 未列出或用户未确认 → 升级（禁止在模糊假设上生成代码）
+
+信号 8：代码膨胀
+  → 评估新增代码行数与任务描述复杂度的比值
+  → 一句话任务产生了超过 50 行实现代码，或 3 倍以上于必要复杂度的代码 → 警告（触发极简审查，确认是否存在过度设计）
 ```
 
 **升级不是失败，是工程成熟度的体现。**
@@ -290,8 +356,8 @@ Vibe Coding Guardian 有两种运行模式，根据项目阶段选择：
   │       → 步骤 E：全部通过 → 进入升级信号检测
   │
   ├─ ❻ 升级信号检测（铁律五 Gate Function）
-  │     🚀 Prototype: 执行信号 1-4（阻断），信号 5（警告但不阻断）
-  │     🏭 Production: 执行全部 5 项信号（阻断）
+  │     🚀 Prototype: 执行信号 1-4（阻断），信号 5（警告但不阻断），信号 6-8（阻断）
+  │     🏭 Production: 执行全部 8 项信号（阻断）
   │     → 任一命中 → 输出风险摘要，请用户确认
   │     → 全部未命中 → 完成
   │
@@ -309,6 +375,10 @@ Vibe Coding Guardian 有两种运行模式，根据项目阶段选择：
 | 🧠 上下文丢失 | 忘记为什么这样做 | 关键决策写进代码或文档 |
 | 📦 依赖爆炸 | 随意引入新库 | 评估必要性、维护状态、替代方案 |
 | 💧 抽象泄漏 | 绕过封装走捷径 | 遵守层间契约，不跨层访问 |
+| 🏗️ 过度设计 | 为简单任务构建通用框架 | 约束一：不为单次使用创建抽象，三处重复再提取 |
+| 📐 范围蔓延 | 实现 A 时顺手做了 B | 约束二：每行改动追溯到用户请求，不改相邻代码 |
+| 🧹 善意重构 | 未经请求"改善"相邻代码、格式、注释 | 约束二：只清理自己产生的 orphan，不动已存在的 dead code |
+| 🎯 幻影成功 | 代码运行了但没解决真实问题 | 铁律二 checklist + 约束三：SUCCESS CRITERIA 前置定义 |
 
 ---
 
@@ -328,13 +398,15 @@ Vibe Coding Guardian 有两种运行模式，根据项目阶段选择：
 
 ## 工具映射：铁律 → Gate Function
 
+> **Karpathy 约束通过对话和审查执行，不单独列行**：极简优先 → 生成前自检 + 信号 8；手术式修改 → 生成时约束 + 信号 6/8；假设显性化 → 铁律一 🔴模板 + 信号 7。
+
 | 铁律 | Gate Function | 🚀 Prototype 工具 | 🏭 Production 工具 | 判定规则 |
 |------|--------------|-------------------|-------------------|----------|
 | 铁律一 | 理解确认（风险分级） | 对话 | 对话 | 🟢 一句话意图 / 🟡 WHAT+CONSTRAINTS / 🔴 完整模板+用户确认 |
-| 铁律二 | 完成条件自检 | Bash（lint + type check + 测试套件或人工确认） | Bash（测试套件 + lint + type check + 契约检查） | 🚀 3 项通过 / 🏭 5 项通过 |
+| 铁律二 | 完成条件自检 | Bash（lint + type check + 测试套件或人工确认） | Bash（测试套件 + lint + type check + 契约检查） | 🚀 4 项通过 / 🏭 6 项通过 |
 | 铁律三 | 验证结构审查 | Bash | Bash | 测试覆盖关键业务规则（金钱/权限/数据完整性），非 getter/setter |
 | 铁律四 | 风险等级评估 | 任务描述关键词 + `git diff --stat`（可选，仅向上修正） | 任务描述关键词 + `git diff --stat`（可选，仅向上修正） | 关键词预判 + git diff 辅助（只能 🟢→🟡→🔴，不能降级） |
-| 铁律五 | 升级信号检测 | `git diff` + `grep`（可选，信号 5 警告不阻断） | `git diff` + `grep`（可选，全部 5 项阻断） | 任一命中 → 升级到人工 |
+| 铁律五 | 升级信号检测 | `git diff` + `grep`（可选，信号 5 警告不阻断，信号 6-8 阻断） | `git diff` + `grep`（可选，全部 8 项阻断） | 任一命中 → 升级到人工 |
 
 ---
 
@@ -348,4 +420,4 @@ Vibe Coding Guardian 有两种运行模式，根据项目阶段选择：
 | [references/security.md](references/security.md) | 🔴 高风险任务（🏭 全部章节 / 🚀 仅输入验证+认证授权） | 输入验证、认证授权、数据保护、漏洞防护 |
 | [references/quality-gates.md](references/quality-gates.md) | 提交前验证、测试策略、契约检查 | 五阶段验证、测试分层、证据状态、门禁升级 |
 | [references/refactoring.md](references/refactoring.md) | 代码腐化、技术债务、渐进式重构 | 重构模式、债务管理、代码气味、安全网 |
-| [references/examples.md](references/examples.md) | 需要理解 good vs bad 模式时 | 五条铁律的正反示例 |
+| [references/examples.md](references/examples.md) | 需要理解 good vs bad 模式时 | 五条铁律 + Karpathy 约束 + 信号 6-8 + 幻影成功的正反示例 |

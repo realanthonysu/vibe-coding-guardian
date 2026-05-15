@@ -1,6 +1,41 @@
 # Changelog
 
-## v1.8.0
+> testsmith 和 testweaver 已迁移至独立项目 [vibe-testing](../vibe-testing/)。
+
+## vibe-coding-guardian v1.9.1
+
+- 修复铁律四表格 Prototype 🔴 行与决策流程图的一致性
+- Karpathy 约束增加执行时机说明（每个约束标注关联的铁律/信号和检查时间点）
+- 工具映射表增加 Karpathy 约束执行方式说明
+- 核心工程原则章节增加约束→铁律/信号映射表
+- examples.md 新增信号 6（无关改动）、信号 7（假设清单缺失）、信号 8（代码膨胀）正反示例
+
+## vibe-coding-pyguardian v1.1.0
+
+- ty 降级为可选（Beta）— 标注 typing spec 合规率 ~53%，建议作为 mypy 补充而非替代
+- 安全扫描栈增加 Semgrep — 推荐 bandit + semgrep 组合使用，覆盖 OWASP Top 10
+- 高风险关键词增加 torch.load() / joblib.load() / shelve.open()（ML 反序列化风险）
+- security.md 新增"ML 模型反序列化"防护章节（weights_only=True / safetensors）
+- Gotchas 增加 Astral 被 OpenAI 收购的生态风险提示
+
+## vibe-coding-pyinit v0.2.0
+
+- Python 版本参数化 — 不再硬编码 3.12，支持用户指定目标版本（默认 3.12）
+- prek hook 版本号改为占位符 — 生成时必须查询最新版本，禁止使用过时硬编码版本
+- library 项目类型增加 py.typed 标记文件（PEP 561），hatchling 配置同步更新
+- Gotchas 增加 Astral 被 OpenAI 收购的生态风险提示
+
+## vibe-coding-guardian v1.9.0
+
+- 新增"核心工程原则"章节（Karpathy 前置约束）：极简优先、手术式修改、假设显性化
+- 铁律一 Gate Function 扩展：🔴 高风险模板增加 ASSUMPTIONS、ALTERNATIVES、SUCCESS CRITERIA
+- 铁律二 checklist 扩展：增加"目标对齐"项，防御幻影成功
+- 铁律五信号扩展：新增信号 6（无关改动）、信号 7（假设清单缺失）、信号 8（代码膨胀）
+- 反模式表扩展：新增过度设计、范围蔓延、善意重构、幻影成功 4 个反模式
+- 决策流程同步更新：信号检测从 5 项扩展为 8 项
+- examples.md 新增：极简优先、手术式修改、假设显性化、幻影成功正反示例
+
+## vibe-coding-guardian v1.8.0
 
 - 铁律四验证深度表改为 4 列，区分 Prototype / Production 模式
 - Gotchas 新增"人工确认核心行为"弱约束的已知风险标注

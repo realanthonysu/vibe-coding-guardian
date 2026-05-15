@@ -4,7 +4,7 @@
 
 [English](./README.md) | 中文
 
-![Version](https://img.shields.io/badge/version-1.8.0-blue)
+![Version](https://img.shields.io/badge/version-1.9.1-blue)
 ![License](https://img.shields.io/badge/license-Apache--2.0-green)
 ![Agent Skills](https://img.shields.io/badge/Agent%20Skills-compatible-brightgreen)
 
@@ -14,16 +14,17 @@
 
 | 技能 | 说明 | 适用范围 |
 |------|------|----------|
-| **vibe-coding-guardian** | 核心工程纪律 — 五条铁律、双模式、风险自适应验证 | 语言无关 |
-| **vibe-coding-pyguardian** | Python 版 — 将铁律映射到 ruff/mypy/pytest/bandit 工具链 | Python |
-| **vibe-coding-pyinit** | 项目脚手架 — 用 uv/ruff/mypy/ty/pytest/prek 标准化 Python 开发环境 | Python |
+| **vibe-coding-guardian** | 核心工程纪律 — Karpathy 前置约束、五条铁律、双模式、8 项可计算信号 | 语言无关 |
 
-`vibe-coding-guardian` 定义*验证什么*。`vibe-coding-pyguardian` 定义*怎么在 Python 中验证*。`vibe-coding-pyinit` 确保验证基础设施从第一天就到位。
+`vibe-coding-guardian` 定义*验证什么*，适用于任何语言。
 
-## 亮点（v1.8.0）
 
+## 亮点（v1.9.1）
+
+- **Karpathy 前置约束** — 在五条铁律之前落实极简优先、手术式修改、假设显性化
+- **8 项可计算信号** — 新增无关改动检测、假设清单缺失、代码膨胀 3 项信号
+- **幻影成功防御** — "能跑"要重新校验"是否解决了真实问题"
 - **双运行模式** — 🚀 Prototype 追求速度，🏭 Production 追求安全
-- **5 项可计算信号** — 用 `git diff` + `grep` 替代"直觉不安"
 - **零外部依赖** — 只需要 git + 项目的 test/lint 命令即可运行
 - **自动提醒** — 在 commit/deploy 前主动提醒从 Prototype 切换到 Production
 
@@ -32,7 +33,7 @@
 ## 目录
 
 - [vibe-coding-guardian](#vibe-coding-guardian)
-  - [亮点（v1.8.0）](#亮点v180)
+  - [亮点（v1.9.1）](#亮点v191)
   - [技能一览](#技能一览)
   - [目录](#目录)
   - [为什么需要这个技能？](#为什么需要这个技能)
@@ -69,6 +70,14 @@ Vibe Coding 提升的是局部推进速度 — 代码生成得很快，测试全
 | 3 | **验证结构 > 验证数量** | 10 个覆盖关键路径的测试 > 100 个覆盖琐碎路径的测试 |
 | 4 | **风险越高，验证越深** | 🟢 低 → 快速检查 · 🟡 中 → 标准验证 · 🔴 高 → 深度验证 + 人工确认 |
 | 5 | **知道何时叫人** | 升级不是失败 — 是工程成熟度的体现 |
+
+五条铁律之上，有三项 **Karpathy 前置约束**，专门防御 AI 编码的典型陷阱：
+
+| 约束 | 防御的陷阱 | 一句话 |
+|------|-----------|--------|
+| **极简优先** | 过度设计 | 代码是负债 — 最小代码解决当前问题 |
+| **手术式修改** | 越界副作用 | 只碰必须碰的代码；每行改动追溯到用户请求 |
+| **假设显性化** | 未经验证的假设 | 明确列出关键假设；该 push back 时就 push back |
 
 ## 双运行模式
 
@@ -184,31 +193,16 @@ vibe-coding-guardian/               # 语言无关的核心技能
     ├── quality-gates.md            # 质量门禁（按需加载）
     ├── refactoring.md              # 重构治理（按需加载）
     └── examples.md                 # 正反示例（按需加载）
-
-skills/
-├── vibe-coding-pyguardian/         # Python 版
-│   ├── SKILL.md
-│   ├── README.md
-│   └── references/
-│       ├── architecture.md
-│       ├── security.md
-│       ├── quality-gates.md
-│       ├── refactoring.md
-│       └── examples.md
-└── vibe-coding-pyinit/             # Python 项目脚手架
-    ├── SKILL.md
-    └── references/
-        ├── library.md
-        ├── web-api.md
-        └── data-pipeline.md
 ```
+
+> Python 专用技能（`vibe-coding-pyguardian`、`vibe-coding-pyinit`）已迁移至 [python-hunter](https://github.com/realanthonysu/python-hunter)。
 
 ## 关键设计决策
 
 | 决策 | 原因 |
 |------|------|
 | 默认 🚀 Prototype | 尊重 Vibe Coding 速度优先的理念 |
-| 5 项可计算升级信号 | 用可检测的模式替代"直觉不安" |
+| 8 项可计算升级信号 | 用可检测的模式替代"直觉不安" |
 | git diff 可选，仅向上修正 | 无 git 历史时也能工作；只能升级风险，不能降级 |
 | 🚀 模式部分加载 security.md | 即使是原型，触及认证也需要输入验证 |
 | commit/push/deploy 时自动提醒 | 在"原型→生产"漂移上线前拦截 |
@@ -223,6 +217,8 @@ skills/
 
 ## 版本演进
 
+### vibe-coding-guardian（v1.9）
+
 | 版本 | 关键变更 |
 |------|----------|
 | v1.0.0 | 初始设计 — 五条铁律 + 渐进式加载 |
@@ -234,9 +230,11 @@ skills/
 | v1.6.0 | 内部一致性 — 统一关键词、git diff 仅向上修正、双模式工具表 |
 | v1.7.0 | 二次 AI 评审 — security.md 部分加载、无测试降级、信号 5 警告不阻断、自动升级提醒 |
 | v1.8.0 | 铁律四双模式表格、已知风险标注、"done/finished"触发词 |
-| — | 新增 `vibe-coding-pyguardian`（Python 版）和 `vibe-coding-pyinit`（项目脚手架）两个配套技能 |
+| v1.9.0 | Karpathy 前置约束（极简 / 手术式 / 假设显性化）、8 项信号（+3）、幻影成功防御、反模式扩展 |
+| v1.9.1 | 约束→铁律映射表、执行时机说明、信号 6-8 正反示例、内部一致性修正 |
 
 详细变更记录见 [CHANGELOG.md](./CHANGELOG.md)。
+
 
 
 ## 许可证
