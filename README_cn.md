@@ -4,7 +4,7 @@
 
 [English](./README.md) | 中文
 
-![Version](https://img.shields.io/badge/version-1.9.1-blue)
+![Version](https://img.shields.io/badge/version-1.10.1-blue)
 ![License](https://img.shields.io/badge/license-Apache--2.0-green)
 ![Agent Skills](https://img.shields.io/badge/Agent%20Skills-compatible-brightgreen)
 
@@ -14,16 +14,19 @@
 
 | 技能 | 说明 | 适用范围 |
 |------|------|----------|
-| **vibe-coding-guardian** | 核心工程纪律 — Karpathy 前置约束、五条铁律、双模式、8 项可计算信号 | 语言无关 |
+| **vibe-coding-guardian** | 核心工程纪律 — Karpathy 前置约束、五条铁律、双模式、9 项可计算信号 | 语言无关 |
 
 `vibe-coding-guardian` 定义*验证什么*，适用于任何语言。
 
 
-## 亮点（v1.9.1）
+## 亮点（v1.10.1）
 
+- **Context Engineering 工作流** — 4 步流程：收集上下文 → 综合 → 制定计划 → 执行（生成代码前必须完成）
+- **可验证抽象层** — 在产品/测试/数据/代码层验证；高层能验证就不下沉到代码层
+- **叶子节点策略** — 区分叶子节点/中间层/主干模块，匹配不同验证深度
+- **9 项可计算信号** — 新增并发/竞态条件检测（社区最高频陷阱）
+- **意图声明最佳实践** — 优质 vs 糟糕的意图声明对比示例
 - **Karpathy 前置约束** — 在五条铁律之前落实极简优先、手术式修改、假设显性化
-- **8 项可计算信号** — 新增无关改动检测、假设清单缺失、代码膨胀 3 项信号
-- **幻影成功防御** — "能跑"要重新校验"是否解决了真实问题"
 - **双运行模式** — 🚀 Prototype 追求速度，🏭 Production 追求安全
 - **零外部依赖** — 只需要 git + 项目的 test/lint 命令即可运行
 - **自动提醒** — 在 commit/deploy 前主动提醒从 Prototype 切换到 Production
@@ -33,7 +36,7 @@
 ## 目录
 
 - [vibe-coding-guardian](#vibe-coding-guardian)
-  - [亮点（v1.9.1）](#亮点v191)
+  - [亮点（v1.10.0）](#亮点v1100)
   - [技能一览](#技能一览)
   - [目录](#目录)
   - [为什么需要这个技能？](#为什么需要这个技能)
@@ -107,6 +110,7 @@ Vibe Coding 提升的是局部推进速度 — 代码生成得很快，测试全
 | `references/security.md` | 🔴 高风险任务（🏭 全部 / 🚀 仅输入验证+认证授权） | 输入验证、认证授权、数据保护、漏洞防护 |
 | `references/quality-gates.md` | 提交前验证、测试策略、契约检查 | 五阶段验证、测试分层、证据状态、门禁升级 |
 | `references/refactoring.md` | 代码腐化、技术债务、渐进式重构 | 重构模式、债务管理、代码气味、安全网 |
+| `references/context-engineering.md` | 复杂代码库、多模块改动、AI 输出不符合业务约束 | 上下文收集框架、质量检查清单、常见陷阱、最佳实践 |
 | `references/examples.md` | 需要理解 good vs bad 模式时 | 五条铁律的 ❌ Bad / ✅ Good 代码示例 |
 
 ## 前置条件
@@ -192,6 +196,7 @@ vibe-coding-guardian/               # 语言无关的核心技能
     ├── security.md                 # 安全护栏（按需加载）
     ├── quality-gates.md            # 质量门禁（按需加载）
     ├── refactoring.md              # 重构治理（按需加载）
+    ├── context-engineering.md      # 上下文工程指南（按需加载，v1.10.0 新增）
     └── examples.md                 # 正反示例（按需加载）
 ```
 
@@ -202,9 +207,11 @@ vibe-coding-guardian/               # 语言无关的核心技能
 | 决策 | 原因 |
 |------|------|
 | 默认 🚀 Prototype | 尊重 Vibe Coding 速度优先的理念 |
-| 8 项可计算升级信号 | 用可检测的模式替代"直觉不安" |
+| 9 项可计算升级信号 | 用可检测的模式替代"直觉不安"；信号 9 捕获并发陷阱 |
 | git diff 可选，仅向上修正 | 无 git 历史时也能工作；只能升级风险，不能降级 |
 | 🚀 模式部分加载 security.md | 即使是原型，触及认证也需要输入验证 |
+| 生成代码前先做 Context Engineering | 模型能力不是瓶颈，上下文质量才是 |
+| 叶子节点差异化验证 | 不是所有代码都值得同等深度的验证 |
 | commit/push/deploy 时自动提醒 | 在"原型→生产"漂移上线前拦截 |
 
 ## 兼容性
@@ -217,7 +224,7 @@ vibe-coding-guardian/               # 语言无关的核心技能
 
 ## 版本演进
 
-### vibe-coding-guardian（v1.9）
+### vibe-coding-guardian（v1.10）
 
 | 版本 | 关键变更 |
 |------|----------|
@@ -232,6 +239,8 @@ vibe-coding-guardian/               # 语言无关的核心技能
 | v1.8.0 | 铁律四双模式表格、已知风险标注、"done/finished"触发词 |
 | v1.9.0 | Karpathy 前置约束（极简 / 手术式 / 假设显性化）、8 项信号（+3）、幻影成功防御、反模式扩展 |
 | v1.9.1 | 约束→铁律映射表、执行时机说明、信号 6-8 正反示例、内部一致性修正 |
+| v1.10.0 | Context Engineering 工作流、可验证抽象层、叶子节点策略、信号 9（并发安全）、意图声明最佳实践、context-engineering.md |
+| v1.10.1 | 统一 Context vs Prompt 对比表、信号 9 增加 grep 检测示例 |
 
 详细变更记录见 [CHANGELOG.md](./CHANGELOG.md)。
 

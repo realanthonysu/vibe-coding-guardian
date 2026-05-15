@@ -4,7 +4,7 @@
 
 English | [中文](./README_cn.md)
 
-![Version](https://img.shields.io/badge/version-1.9.1-blue)
+![Version](https://img.shields.io/badge/version-1.10.1-blue)
 ![License](https://img.shields.io/badge/license-Apache--2.0-green)
 ![Agent Skills](https://img.shields.io/badge/Agent%20Skills-compatible-brightgreen)
 
@@ -21,11 +21,14 @@ An [Agent Skills](https://agentskills.io/specification)-compatible skill suite t
 > Python-specific skills (`vibe-coding-pyguardian`, `vibe-coding-pyinit`) have moved to the independent project [python-hunter](https://github.com/realanthonysu/python-hunter).
 > Testing skills (`testsmith`, `testweaver`) have moved to the independent project [vibe-testing](../vibe-testing/).
 
-## Highlights (v1.9.1)
+## Highlights (v1.10.1)
 
+- **Context Engineering workflow** — 4-step flow: gather context → synthesize → plan → execute (before any code generation)
+- **Verifiable abstractions** — verify at product/test/data/code layers; don't read code when higher layers suffice
+- **Leaf-node strategy** — differentiate leaf nodes / mid-tier / core modules for risk-appropriate verification depth
+- **9 computable signals** — adds concurrency/race-condition detection (top community pitfall)
+- **Intent declaration best practices** — good vs bad prompt examples from community consensus
 - **Karpathy pre-constraints** — Minimum code, surgical changes, explicit assumptions before any iron rule
-- **8 computable signals** — adds orphan cleanup, assumption validation, and complexity bloat detection
-- **Phantom success guard** — "running" is re-checked against "solves the actual problem"
 - **Dual mode** — 🚀 Prototype for speed, 🏭 Production for safety
 - **Zero dependencies** — works with just git + your project's test/lint commands
 - **Auto-remind** — nudges you from Prototype to Production before commit/deploy
@@ -103,6 +106,7 @@ Tier 3: references/ (per file)     — deep guides, loaded only when relevant
 | `references/security.md` | 🔴 high-risk tasks (🏭 full / 🚀 input validation + auth only) | Input validation, auth, data protection, vulnerability prevention |
 | `references/quality-gates.md` | Pre-commit verification, test strategy, contract checks | 5-stage verification, test layering, evidence states, gate escalation |
 | `references/refactoring.md` | Code rot, tech debt, progressive refactoring | Refactoring patterns, debt management, code smells, safety nets |
+| `references/context-engineering.md` | Complex codebase, multi-module changes, AI output doesn't match constraints | Context gathering framework, quality checklist, common pitfalls, best practices |
 | `references/examples.md` | Need to understand good vs bad patterns | 5 iron rules with ❌ Bad / ✅ Good code examples |
 
 ## Prerequisites
@@ -188,6 +192,7 @@ vibe-coding-guardian/               # Language-agnostic core
     ├── security.md                 # Security guardrails (on-demand)
     ├── quality-gates.md            # Quality gates (on-demand)
     ├── refactoring.md              # Refactoring governance (on-demand)
+    ├── context-engineering.md      # Context engineering guide (on-demand, new in v1.10.0)
     └── examples.md                 # Good vs Bad examples (on-demand)
 ```
 
@@ -198,9 +203,11 @@ vibe-coding-guardian/               # Language-agnostic core
 | Decision | Rationale |
 |----------|-----------|
 | Default to 🚀 Prototype | Respects Vibe Coding's speed-first philosophy |
-| 8 computable escalation signals | Replaces "gut feeling" with detectable patterns |
+| 9 computable escalation signals | Replaces "gut feeling" with detectable patterns; signal 9 catches concurrency pitfalls |
 | `git diff` is optional, upward-only | Works without git history; can only escalate, never downgrade risk |
 | security.md loaded partially in 🚀 | Even prototypes touching auth need input validation |
+| Context Engineering before generation | Model capability isn't the bottleneck — context quality is |
+| Leaf-node differentiation | Not all code deserves the same verification depth |
 | Auto-remind on commit/push/deploy | Catches the "prototype → production" drift before it ships |
 
 ## Compatibility
@@ -213,7 +220,7 @@ vibe-coding-guardian/               # Language-agnostic core
 
 ## Evolution History
 
-### vibe-coding-guardian (v1.9)
+### vibe-coding-guardian (v1.10)
 
 | Version | Key Change |
 |---------|-----------|
@@ -228,6 +235,8 @@ vibe-coding-guardian/               # Language-agnostic core
 | v1.8.0 | Iron rule 4 dual-mode table, known-risk documentation, "done/finished" trigger words |
 | v1.9.0 | Karpathy pre-constraints (Simplicity / Surgical / Assumptions), 8 signals (+3), phantom success guard, expanded anti-patterns |
 | v1.9.1 | Constraint-to-rule mapping, execution timing, signal 6-8 examples, internal consistency fixes |
+| v1.10.0 | Context Engineering workflow, verifiable abstractions, leaf-node strategy, signal 9 (concurrency), intent declaration best practices, context-engineering.md |
+| v1.10.1 | Unified Context vs Prompt comparison table, signal 9 grep detection examples |
 
 For detailed changes, see [CHANGELOG.md](./CHANGELOG.md).
 

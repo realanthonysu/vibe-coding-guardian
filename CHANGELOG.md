@@ -2,6 +2,32 @@
 
 > testsmith 和 testweaver 已迁移至独立项目 [vibe-testing](../vibe-testing/)。
 
+## vibe-coding-guardian v1.10.1
+
+- 统一 SKILL.md 与 context-engineering.md 的 Context vs Prompt 对比表（6 行完整版本）
+- 铁律五信号 9 增加快速检测 grep 示例（共享路径 / 全局状态 / 无锁写入）
+
+## vibe-coding-guardian v1.10.0
+
+- 新增"Context Engineering 前置工作流"章节（来源：Erik Schluntz, Anthropic）
+  - 4 步流程：Context Gathering → Context Synthesis → Plan Formulation → Execution
+  - Context Engineering vs Prompt Engineering 对比表
+  - 上下文检查清单（6 项）
+- 新增 context-engineering.md 参考文件
+  - 上下文收集框架、质量检查清单、常见陷阱、多层上下文管理
+  - 精准修正模板、上下文沉淀最佳实践
+- 铁律二增加"可验证抽象层"方法论（来源：Erik Schluntz）
+  - 产品层/测试层/数据层/代码层四级抽象
+  - 执行规则：高层验证优先，异常时下钻
+- 铁律四增加"叶子节点策略"（来源：Erik Schluntz）
+  - 叶子节点/中间层/主干模块分类及差异化验证策略
+- 铁律一 Gate Function 增加叶子节点判断步骤
+- 铁律一增加"意图声明最佳实践"对比表（来源：社区共识）
+- 铁律五升级信号新增信号 9：并发安全隐患（来源：知乎/CSDN 避坑指南）
+- 反模式表新增：并发盲区、安全幻觉、上下文断裂 3 个反模式
+- 工具映射表铁律五信号数从 8 更新为 9
+- 按需加载指南新增 context-engineering.md
+
 ## vibe-coding-guardian v1.9.1
 
 - 修复铁律四表格 Prototype 🔴 行与决策流程图的一致性
